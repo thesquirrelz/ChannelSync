@@ -37,8 +37,12 @@
 
         <form-list name="ShoppingCartForm" list="shoppingCartList">
             <field name="productStoreId">
+                <header-field title="ID" show-order-by="case-insensitive">
+                   <text-find size="10" hide-options="true"/>
+                </header-field>
+
                 <default-field>
-                  <link url="../EditShoppingCart" text="${productStoreId}"/>
+                  <link url="../EditShoppingCart" text="${productStoreId}" link-type="anchor"/>
                 </default-field>
             </field>
             <field name="storeName">
