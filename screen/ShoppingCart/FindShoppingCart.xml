@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/xml-screen-1.6.xsd"
+        default-menu-include="false">
+
+    <transition name="findShoppingCart"><default-response url="."/></transition>
+    <transition name="editShoppingCart"><default-response url="../EditShoppingCart"/></transition>
+
+    <transition name="createShoppingCart">
+       <service-call name="create#mantle.product.store.ProductStoreShoppingCartGateway"/>
+       <default-response url="../EditShoppingCart"/>
+    </transition>
+
+    <actions>
+        <entity-find entity-name="mantle.product.store.ProductStoreShoppingCartGateway" list="shoppingCartList">
+          <search-form-inputs default-order-by="storeName"/>
+        </entity-find>
+    </actions>
+
+    <widgets>
+        <container-dialog id="NewShoppingCartDialog" button-text="New ShoppingCart">
+            <form-single name="NewShoppingCartForm" transition="createShoppingCart">
+                <field name="productStoreId"><default-field><text-line/></default-field></field>
+                <field name="storeName"><default-field><text-line/></default-field></field>
+                <field name="shoppingCartUrl"><default-field><text-line/></default-field></field>
+                <field name="shoppingCartPath"><default-field><text-line/></default-field></field>
+                <field name="shoppingCartTypeEnumId">
+                  <default-field title="Shopping Cart Type">
+                    <widget-template-include location="component://webroot/template/screen/BasicWidgetTemplates.xml#enumDropDown">
+                      <set field="enumTypeId" value="ProductStoreShoppingCartType"/>
+                    </widget-template-include>
+                   </default-field>
+                </field>
+                <field name="submitButton"><default-field title="Create"><submit/></default-field></field>
+            </form-single>
+        </container-dialog>
+
+        <form-list name="ShoppingCartForm" list="shoppingCartList">
+            <field name="productStoreId">
+                <default-field>
+                  <link url="../EditShoppingCart" text="${productStoreId}"/>
+                </default-field>
+            </field>
+            <field name="submitButton"><header-field title="Find"><submit/></header-field>
+                <default-field><display text=" "/></default-field></field>
+        </form-list>
+    </widgets>
+</screen>

@@ -1,0 +1,7 @@
+<screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/xml-screen-1.6.xsd"
+        default-menu-title="Stores" default-menu-index="99">
+    <subscreens default-item="FindShoppingCart"/>
+    <widgets>
+        <subscreens-panel id="StorePanel" type="tab"/>
+    </widgets>
+</screen>
