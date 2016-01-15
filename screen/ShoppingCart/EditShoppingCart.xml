@@ -27,7 +27,7 @@ along with this software (see the LICENSE.md file). If not, see
     <entity-find-one entity-name="mantle.product.store.ProductStoreShoppingCartGateway" value-field="shoppingCart" />
   </actions>
   <widgets>
-        <!-- map && entity-find-one is implicitly working with param productStoreId passing value-field in map is itterating through the form -->
+        <!-- map && entity-find-one is implicitly working with param productStoreId passing value-field in map is iterating through the form -->
         <form-single name="EditShoppingCartForm" map="shoppingCart" transition="updateShoppingCart">
             <field name="productStoreId"><default-field><text-line/></default-field></field>
             <field name="storeName"><default-field><text-line/></default-field></field>
