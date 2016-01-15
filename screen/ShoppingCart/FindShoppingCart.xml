@@ -41,8 +41,24 @@
                   <link url="../EditShoppingCart" text="${productStoreId}"/>
                 </default-field>
             </field>
+            <field name="storeName">
+                <header-field title="StoreName" show-order-by="case-insensitive"/>
+                <default-field><display also-hidden="false"/></default-field>
+            </field>
+            <field name="apiKey">
+                <header-field title="apiKey" show-order-by="case-insensitive"/>
+                <default-field><display also-hidden="false"/></default-field>
+            </field>
+            <field name="shoppingCartUrl">
+                <header-field title="shoppingCartUrl" show-order-by="case-insensitive"/>
+                <default-field><display also-hidden="false"/></default-field>
+            </field>
+            <field name="shoppingCartPath">
+                <header-field title="shoppingCartPath" show-order-by="case-insensitive"/>
+                <default-field><display also-hidden="false"/></default-field>
+            </field>
             <field name="submitButton"><header-field title="Find"><submit/></header-field>
-                <default-field><display text=" "/></default-field></field>
+            <default-field><display text=" "/></default-field></field>
         </form-list>
     </widgets>
 </screen>
