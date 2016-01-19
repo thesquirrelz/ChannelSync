@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/xml-screen-1.6.xsd"
+        default-menu-include="false">
+
+    <transition name="findChannelSync"><default-response url="."/></transition>
+    <transition name="editChannelSync"><default-response url="../EditChannelSync"/></transition>
+
+    <transition name="createChannelSync">
+       <service-call name="create#mantle.product.store.ProductStoreChannelGateway"/>
+       <default-response url="../EditChannelSync"/>
+    </transition>
+
+    <actions>
+        <entity-find entity-name="mantle.product.store.ProductStoreChannelGateway" list="channelSyncList">
+          <search-form-inputs default-order-by="storeName"/>
+        </entity-find>
+    </actions>
+
+    <widgets>
+        <container-dialog id="NewChannelSyncDialog" button-text="New Channel Sync">
+            <form-single name="NewChannelSyncForm" transition="createChannelSync">
+                <field name="productStoreId"><default-field><text-line/></default-field></field>
+                <field name="storeName"><default-field><text-line/></default-field></field>
+                <field name="shoppingCartUrl"><default-field><text-line/></default-field></field>
+                <field name="channelEnumId">
+                  <default-field title="Channel Sync Type">
+                    <widget-template-include location="component://webroot/template/screen/BasicWidgetTemplates.xml#enumDropDown">
+                      <set field="enumTypeId" value="ProductStoreChannelSyncType"/>
+                    </widget-template-include>
+                   </default-field>
+                </field>
+                <field name="submitButton"><default-field title="Create"><submit/></default-field></field>
+            </form-single>
+        </container-dialog>
+
+        <form-list name="ChannelSyncForm" list="channelSyncList">
+            <field name="productStoreId">
+                <header-field title="ID" show-order-by="case-insensitive">
+                   <text-find size="10" hide-options="true"/>
+                </header-field>
+
+                <default-field>
+                  <link url="../EditChannelSync" text="${productStoreId}" link-type="anchor"/>
+                </default-field>
+            </field>
+            <field name="storeName">
+                <header-field title="StoreName" show-order-by="case-insensitive"/>
+                <default-field><display also-hidden="false"/></default-field>
+            </field>
+            <field name="apiKey">
+                <header-field title="apiKey" show-order-by="case-insensitive"/>
+                <default-field><display also-hidden="false"/></default-field>
+            </field>
+            <field name="shoppingCartUrl">
+                <header-field title="shoppingCartUrl" show-order-by="case-insensitive"/>
+                <default-field><display also-hidden="false"/></default-field>
+            </field>
+            <field name="submitButton"><header-field title="Find"><submit/></header-field>
+            <default-field><display text=" "/></default-field></field>
+        </form-list>
+    </widgets>
+</screen>

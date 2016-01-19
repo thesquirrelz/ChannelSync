@@ -1,0 +1,7 @@
+<screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/xml-screen-1.6.xsd"
+        default-menu-title="Channel Sync" default-menu-index="99">
+    <subscreens default-item="FindChannelSync"/>
+    <widgets>
+        <subscreens-panel id="ChannelSyncPanel" type="tab"/>
+    </widgets>
+</screen>

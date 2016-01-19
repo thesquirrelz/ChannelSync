@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This software is in the public domain under CC0 1.0 Universal plus a
+Grant of Patent License.
+
+To the extent possible under law, the author(s) have dedicated all
+copyright and related and neighboring rights to this software to the
+public domain worldwide. This software is distributed without any
+warranty.
+
+You should have received a copy of the CC0 Public Domain Dedication
+along with this software (see the LICENSE.md file). If not, see
+<http://creativecommons.org/publicdomain/zero/1.0/>.
+-->
+<screen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/xml-screen-1.6.xsd"
+        default-menu-title="Store" default-menu-index="99">
+
+  <parameter name="productStoreId" required="true"/>
+
+  <transition name="shoppingCart"><default-response url="."><parameter name="productStoreId" value=""/></default-response></transition>
+
+  <transition name="updateShoppingCart">
+    <service-call name="update#mantle.product.store.ProductStoreShoppingCartGateway"/>
+    <default-response url="."/>
+  </transition>
+  <actions>
+    <entity-find-one entity-name="mantle.product.store.ProductStoreShoppingCartGateway" value-field="shoppingCart" />
+  </actions>
+  <widgets>
+        <!-- map && entity-find-one is implicitly working with param productStoreId passing value-field in map is iterating through the form -->
+        <form-single name="EditShoppingCartForm" map="shoppingCart" transition="updateShoppingCart">
+            <field name="productStoreId"><default-field><text-line/></default-field></field>
+            <field name="storeName"><default-field><text-line/></default-field></field>
+            <field name="shoppingCartUrl"><default-field><text-line/></default-field></field>
+            <field name="shoppingCartPath"><default-field><text-line/></default-field></field>
+            <field name="shoppingCartTypeEnumId">
+              <default-field title="Shopping Cart Type">
+                <widget-template-include location="component://webroot/template/screen/BasicWidgetTemplates.xml#enumDropDown">
+                  <set field="enumTypeId" value="ProductStoreShoppingCartType"/>
+                </widget-template-include>
+               </default-field>
+            </field>
+            <field name="submitButton"><default-field title="Update"><submit/></default-field></field>
+        </form-single>
+  </widgets>
+</screen>

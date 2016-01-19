@@ -1,6 +1,6 @@
-## ShoppingCart
+## ChannelSync
 
-ShoppingCart extends Moqui to synchronize Orders, Products and Categories with various shopping cart systems.
+ChannelSync extends Moqui to synchronize Orders, Products and Categories with various shopping cart systems.
 
 ## Supported Shopping Carts
 - [Spree Commerce](http://spreecommerce.com/) / [Solidus](http://solidus.io/)

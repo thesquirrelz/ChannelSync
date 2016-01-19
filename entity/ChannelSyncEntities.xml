@@ -17,19 +17,18 @@ along with this software (see the LICENSE.md file). If not, see
 
     <!-- TODO: Match ProductStore to ShoppingCart, lets assume that you will create one ShoppingCart per Store -->
     <!-- TODO: Add entites to save ShoppingCart API keys -->
-    <entity entity-name="ProductStoreShoppingCartGateway" package-name="mantle.product.store">
+    <entity entity-name="ProductStoreChannelGateway" package-name="mantle.product.store">
         <field name="productStoreId" type="id" is-pk="true"/>
-        <field name="shoppingCartTypeEnumId" type="id" is-pk="true"/>
+        <field name="channelTypeEnumId" type="id" is-pk="true"/>
         <field name="apiKey" type="text-medium" encrypt="true"><description>API Key</description></field>
-        <field name="shoppingCartUrl" type="text-medium"><description>Shopping Cart URL</description></field>
-        <field name="shoppingCartPath" type="text-medium"><description>Shopping Cart Path</description></field>
+        <field name="channelUrl" type="text-medium"><description>Shopping Cart URL</description></field>
 
         <relationship type="one" related-entity-name="mantle.product.store.ProductStore" short-alias="store"/>
-        <relationship type="one" title="ProductStoreShoppingCartType" related-entity-name="moqui.basic.Enumeration" short-alias="type">
-            <key-map field-name="shoppingCartTypeEnumId"/></relationship>
+        <relationship type="one" title="ProductStoreChannelType" related-entity-name="moqui.basic.Enumeration" short-alias="type">
+            <key-map field-name="channelTypeEnumId"/></relationship>
             <seed-data>
                 <!-- Product Store Shopping Cart -->
-                <moqui.basic.EnumerationType description="Product Store Shopping Cart Type" enumTypeId="ProductStoreShoppingCartType"/>
+                <moqui.basic.EnumerationType description="Product Store Channel Type" enumTypeId="ProductStoreShoppingCartType"/>
                 <moqui.basic.Enumeration description="Spree Commerce" enumId="PssctSpree" enumTypeId="ProductStoreShoppingCartType"/>
             </seed-data>
 
