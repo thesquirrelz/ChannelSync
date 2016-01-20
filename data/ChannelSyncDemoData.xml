@@ -19,7 +19,6 @@ along with this software (see the LICENSE.md file). If not, see
                                        reservationOrderEnumId="AsResOrdFifoRec" requirementMethodEnumId=""
                                        defaultLocale="en_US" defaultCurrencyUomId="USD" taxGatewayConfigId="LOCAL"/>
 
-    <mantle.product.store.ProductStoreChannelGateway productStoreId="SPREE_DEFAULT"
-                                                          shoppingCartTypeEnumId="PssctSpree" shoppingCartUrl="" apiKey=""/>
-
+    <mantle.product.store.ProductStoreChannelGateway productStoreId="SPREE_DEFAULT" channelTypeEnumId="ScSpree"
+                                                     channelUrl="http://example.com" apiKey="1234567890"/>
 </entity-facade-xml>

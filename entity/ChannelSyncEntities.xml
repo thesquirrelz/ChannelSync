@@ -15,8 +15,8 @@ along with this software (see the LICENSE.md file). If not, see
 <entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/entity-definition-1.6.xsd">
 
-    <!-- TODO: Match ProductStore to ShoppingCart, lets assume that you will create one ShoppingCart per Store -->
-    <!-- TODO: Add entites to save ShoppingCart API keys -->
+    <!-- TODO: Match ProductStore to Channel, lets assume that you will create one Channel per Store -->
+    <!-- TODO: Add entites to save ChannelGateway API keys -->
     <entity entity-name="ProductStoreChannelGateway" package-name="mantle.product.store">
         <field name="productStoreId" type="id" is-pk="true"/>
         <field name="channelTypeEnumId" type="id" is-pk="true"/>
@@ -24,12 +24,11 @@ along with this software (see the LICENSE.md file). If not, see
         <field name="channelUrl" type="text-medium"><description>Shopping Cart URL</description></field>
 
         <relationship type="one" related-entity-name="mantle.product.store.ProductStore" short-alias="store"/>
-        <relationship type="one" title="ProductStoreChannelType" related-entity-name="moqui.basic.Enumeration" short-alias="type">
+        <relationship type="one" title="SalesChannelType" related-entity-name="moqui.basic.Enumeration" short-alias="type">
             <key-map field-name="channelTypeEnumId"/></relationship>
             <seed-data>
-                <!-- Product Store Shopping Cart -->
-                <moqui.basic.EnumerationType description="Product Store Channel Type" enumTypeId="ProductStoreShoppingCartType"/>
-                <moqui.basic.Enumeration description="Spree Commerce" enumId="PssctSpree" enumTypeId="ProductStoreShoppingCartType"/>
+                <!-- Sales Channels -->
+                <moqui.basic.Enumeration description="Spree" enumId="ScSpree" enumTypeId="SalesChannel"/>
             </seed-data>
 
     </entity>
