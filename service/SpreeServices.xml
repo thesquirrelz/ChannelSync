@@ -17,13 +17,57 @@ along with this software (see the LICENSE.md file). If not, see
     <!-- Get all products from Spree -->
     <service verb="get" noun="SpreeProducts">
         <in-parameters>
-            <parameter name="api key"/>
+            <parameter name="TODO: apiKey"/>
         </in-parameters>
         <out-parameters>
             <parameter name="SpreeProducts" type="Map"/>
         </out-parameters>
         <actions>
+            <script><!-- TODO: --></script>
             <log level="info" message="channelSync.SpreeServices.get#SpreeProducts"/>
+            <iterate list="products" entry="product">
+                <!-- find existing Products matched by their pseudoId -->
+                <if condition="!pseudoId">
+                    <!-- general lookup on Product -->
+                    <entity-find entity-name="mantle.product.Product" list="productList"/>
+                </if>
+            </iterate>
+
+            <set field="isCreate" from="pseudoId ? false : true"/>
+
+            <if condition="isCreate">
+                <then>
+                    <!-- create new product -->
+                    <service-call name="mantle.order.OrderServices.create#Order" out-map="orderOut" in-map="header"/>
+                    <set field="orderId" from="orderOut.orderId"/>
+                </then>
+                <else>
+                    <!-- update existing product -->
+                    <set field="header.orderId" from="orderId"/>
+
+                    <!-- update order items -->
+                    <entity-find entity-name="mantle.order.OrderItem" list="orderItemList">
+                        <econdition field-name="orderId"/></entity-find>
+                    <set field="itemSeqIdSeenList" from="[]"/>
+                    <iterate list="items" entry="item">
+                        <set field="item.orderId" from="orderId"/>
+                        <set field="item.orderPartSeqId" from="orderPartSeqId"/>
+
+                        <set field="orderItem" from="orderItemList.find({ it.externalItemSeqId == item.externalItemSeqId })"/>
+                        <if condition="orderItem">
+                            <then>
+                                <script>itemSeqIdSeenList.add(orderItem.orderItemSeqId)</script>
+                                <set field="item.orderItemSeqId" from="orderItem.orderItemSeqId"/>
+                                <service-call name="mantle.order.OrderServices.update#OrderItem" in-map="item" out-map="updateItemOut"/>
+                            </then>
+                            <else>
+                                <service-call name="mantle.order.OrderServices.create#OrderItem" in-map="item" out-map="createItemOut"/>
+                            </else>
+                        </if>
+                    </iterate>
+                </else>
+            </if>
+
         </actions>
     </service>
 
