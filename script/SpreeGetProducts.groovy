@@ -1,101 +1,56 @@
-import groovyx.net.http.RESTClient
-import groovyx.net.http.HttpResponseException
-import static groovyx.net.http.ContentType.*
-import groovy.json.*
+/*
+ * This software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ *
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ *
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
 
-class RestApi { 
-  static String productGet(String url, String token, String path) {
-      Map<String, Object> headers = ['X-Spree-Token': token]
+import org.apache.http.HttpResponse;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.HttpEntity
+import org.apache.http.NameValuePair
+import org.apache.http.client.entity.UrlEncodedFormEntity
+import org.apache.http.client.methods.CloseableHttpResponse
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.entity.ContentType
+import org.apache.http.entity.StringEntity
+import org.apache.http.impl.client.CloseableHttpClient
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.message.BasicNameValuePair
+import org.apache.http.util.EntityUtils
 
-      def spree = new RESTClient(url)
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-      def resp = spree.get(
-          path: path,
-          headers: headers,
-          requestContentType : JSON 
-       )
+Logger logger = LoggerFactory.getLogger("SpreeGetProducts")
+logger.info("======== Get Spree Products")
+//logger.warn("======== JSON remote service request to channelUrl: ${channelUrl}, endPoint: ${endPoint}, apiKey: ${apiKey}")
 
-      List SpreeJson = new JsonBuilder(resp.data).toPrettyString()
-      def f = new File('SpreeProduct.json')
-      if (f) f.delete()
-      f.append SpreeJson
-   }
+def location = channelUrl + endPoint + apiKey
+// logger.warn("======== location: ${location}")
 
-   static String productPut(String url, String token, String path) {
-     def spree = new RESTClient(url)
+CloseableHttpClient httpClient = HttpClients.createDefault()
+try {
+    HttpGet httpGet = new HttpGet(location)
+        httpGet.addHeader("Accept" , "application/json")
 
-     Map<String, Object> headers = ['X-Spree-Token': token]
+    CloseableHttpResponse response = httpClient.execute(httpGet)
+        // logger.warn("======== httpGet: ${httpGet}")
 
-     def newName = "Modified Name ${Math.abs(new Random().nextInt())}".toString()
-     println "New name should equal: '$newName'"
-     // try will execute the method no matter what finally should print the status  
-     try {
-        def request = spree.put(
-           path: path,
-           headers: headers,
-           body: [name: newName],
-           requestContentType: JSON
-         )
-        } finally {
-            println("Success: $request.success")
-            println("Status:  $request.status")
-            println("Reason:  $request.statusLine.reasonPhrase")
-            JSONObject userJson = JSON.parse(request.data)
-            println("Content: \n${JsonOutput.prettyPrint(JsonOutput.toJson(request.data))}")
-        }
-   }
+        HttpEntity entity = response.getEntity()
+        // logger.warn("======== entity: ${entity}")
 
-   static String productPost(String url, String token, String path) {
-     def spree = new RESTClient(url)
-     Map<String, Object> headers = ['X-Spree-Token': token]
-
-     def newName = "Modified Name ${Math.abs(new Random().nextInt())}".toString()
-     println "New name should equal: '$newName'"
-
-     // try will execute the method no matter what finally should print the status  
-      def request = spree.post(
-         path: path,
-         headers: headers,
-         body: [name: newName, description: 'this is a new description', shipping_category_id: '1', designer_id: '2'],
-         requestContentType: URLENC
-       )
-   }
-
-
-   static String productPost(String url, String token, String body, String path) {
-    Map<String, Object> headers = ['X-Spree-Token': token, 'Content-Type': 'application/x-www-form-urlencoded']
-      try {
-        def request = SpreeApi.post(
-          path: path,
-          requestContentType: URLENC,
-          headers: headers, 
-          body: body
-       )
-      } catch(HttpResponseException e) {
-          String r = e.response
-          println("Success: $r.success")
-          println("Status:  $r.status")
-          println("Reason:  $r.statusLine.reasonPhrase")
-          println("Content: \n${JsonOutput.prettyPrint(JsonOutput.toJson(r.data))}")
-      }
-   }
+        String responseString = EntityUtils.toString(entity, "UTF-8");
+        logger.warn("======== responseString: ${responseString}")
+} finally {
+    httpClient.close()
 }
-
-postBody = ["product[name]": 'boombastic', "product[price]": "100", "product[shipping_category_id]": 2, "product[designer_id]": 1]
-SpreeUrl = new RESTClient('https://staging.thesquirrelz.com')
-apiKey = '10ae480e1d942040db7e99bb2bef8bf13bbc1714bd4d8e33'
-
-productPath = '/products'
-putPath = 'products/ruyi-necklace-fabric-flower.json'
-
-url = 'https://staging.thesquirrelz.com/api/'
-Spree = new SpreeApi()
-Spree.productGet(url, apiKey, productPath)
-
-//Spree.productPost(url, apiKey, postBody, productPath)
-//Spree.productPut(url, apiKey, putPath)
-//f.append JsonOutput.prettyPrint(resp.data)
-
-
-
-

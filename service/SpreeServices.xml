@@ -14,60 +14,35 @@ along with this software (see the LICENSE.md file). If not, see
 -->
 <services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-1.6.xsd">
 
-    <!-- Get all products from Spree -->
-    <service verb="get" noun="SpreeProducts">
+    <!-- Get Spree config from database -->
+    <service verb="get" noun="SpreeConfig">
         <in-parameters>
-            <parameter name="TODO: apiKey"/>
+            <parameter name="productStoreId"/>
         </in-parameters>
         <out-parameters>
-            <parameter name="SpreeProducts" type="Map"/>
+            <parameter name="apiKey"/>
+            <parameter name="channelUrl"/>
         </out-parameters>
         <actions>
-            <script><!-- TODO: --></script>
-            <log level="info" message="channelSync.SpreeServices.get#SpreeProducts"/>
-            <iterate list="products" entry="product">
-                <!-- find existing Products matched by their pseudoId -->
-                <if condition="!pseudoId">
-                    <!-- general lookup on Product -->
-                    <entity-find entity-name="mantle.product.Product" list="productList"/>
-                </if>
-            </iterate>
+            <entity-find entity-name="mantle.product.store.ProductStoreChannelGateway" list="allPSCGList">
+                <econdition field-name="productStoreId"/>
+            </entity-find>
+            <set field="apiKey" from="allPSCGList.apiKey"/>
+            <set field="channelUrl" from="allPSCGList.channelUrl"/>
+        </actions>
+    </service>
 
-            <set field="isCreate" from="pseudoId ? false : true"/>
-
-            <if condition="isCreate">
-                <then>
-                    <!-- create new product -->
-                    <service-call name="mantle.order.OrderServices.create#Order" out-map="orderOut" in-map="header"/>
-                    <set field="orderId" from="orderOut.orderId"/>
-                </then>
-                <else>
-                    <!-- update existing product -->
-                    <set field="header.orderId" from="orderId"/>
-
-                    <!-- update order items -->
-                    <entity-find entity-name="mantle.order.OrderItem" list="orderItemList">
-                        <econdition field-name="orderId"/></entity-find>
-                    <set field="itemSeqIdSeenList" from="[]"/>
-                    <iterate list="items" entry="item">
-                        <set field="item.orderId" from="orderId"/>
-                        <set field="item.orderPartSeqId" from="orderPartSeqId"/>
-
-                        <set field="orderItem" from="orderItemList.find({ it.externalItemSeqId == item.externalItemSeqId })"/>
-                        <if condition="orderItem">
-                            <then>
-                                <script>itemSeqIdSeenList.add(orderItem.orderItemSeqId)</script>
-                                <set field="item.orderItemSeqId" from="orderItem.orderItemSeqId"/>
-                                <service-call name="mantle.order.OrderServices.update#OrderItem" in-map="item" out-map="updateItemOut"/>
-                            </then>
-                            <else>
-                                <service-call name="mantle.order.OrderServices.create#OrderItem" in-map="item" out-map="createItemOut"/>
-                            </else>
-                        </if>
-                    </iterate>
-                </else>
-            </if>
-
+    <!-- get the list of products in Spree -->
+    <service verb="get" noun="SpreeProducts" type="script"  location="component://ChannelSync/script/SpreeGetProducts.groovy">
+        <in-parameters>
+            <parameter name="apiKey"/>
+            <parameter name="channelUrl"/>
+            <parameter name="endPoint"/>
+        </in-parameters>
+        <out-parameters>
+            <parameter name="httpResponse"/>
+        </out-parameters>
+        <actions>
         </actions>
     </service>
 
